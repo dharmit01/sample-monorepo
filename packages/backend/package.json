@@ -1,0 +1,19 @@
+{
+  "name": "@repo/backend",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "node --test src/auth.test.ts"
+  },
+  "dependencies": {
+    "@repo/database": "workspace:*",
+    "@repo/validators": "workspace:*",
+    "@trpc/server": "^11.19.0",
+    "jose": "^6.2.12",
+    "superjson": "^2.2.6"
+  }
+}
