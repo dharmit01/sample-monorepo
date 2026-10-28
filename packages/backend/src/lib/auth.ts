@@ -1,6 +1,7 @@
 import { randomBytes, scrypt as scryptCb, timingSafeEqual } from "node:crypto";
 import { promisify } from "node:util";
 import { jwtVerify, SignJWT } from "jose";
+import { SESSION_COOKIE, SESSION_TTL } from "@repo/constants";
 
 const scrypt = promisify(scryptCb) as (pw: string, salt: Buffer, len: number) => Promise<Buffer>;
 
@@ -16,8 +17,6 @@ export async function verifyPassword(password: string, stored: string) {
   const actual = await scrypt(password, Buffer.from(salt, "hex"), 64);
   return timingSafeEqual(actual, Buffer.from(hash, "hex"));
 }
-
-const SESSION_TTL = 60 * 60 * 24 * 7; // 7 days, seconds
 
 function secret() {
   const s = process.env.JWT_SECRET;
@@ -43,8 +42,6 @@ export async function verifyToken(token: string) {
     return null;
   }
 }
-
-export const SESSION_COOKIE = "session";
 
 export function sessionCookie(token: string, maxAge = SESSION_TTL) {
   return [

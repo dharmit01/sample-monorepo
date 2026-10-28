@@ -1,18 +1,26 @@
 {
-  "name": "sample-monorepo",
+  "name": "student-management",
   "private": true,
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
+    "lint": "turbo lint",
     "typecheck": "turbo typecheck",
     "test": "turbo test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "db:generate": "pnpm --filter @repo/database db:generate",
     "db:migrate": "pnpm --filter @repo/database db:migrate",
     "db:studio": "pnpm --filter @repo/database db:studio"
   },
+  "engines": {
+    "node": ">=24"
+  },
   "packageManager": "pnpm@12.14.0+sha512.c18ba6d87993d3d164cb5e8948f32b2c06ee854487e06cd8d86781342fb3e5bb4634367034711e86802baa9c37bea906ce1929ad08d70884c97d801df13389a6",
   "devDependencies": {
     "@types/node": "^26.6.5",
+    "eslint": "^9.39.5",
+    "prettier": "^3.9.10",
     "turbo": "^2.11.9",
     "typescript": "^7.0.2"
   }

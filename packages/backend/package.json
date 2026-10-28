@@ -7,13 +7,18 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "node --test src/auth.test.ts"
+    "test": "node --test src/lib/auth.test.ts",
+    "lint": "eslint ."
   },
   "dependencies": {
+    "@repo/constants": "workspace:*",
     "@repo/database": "workspace:*",
     "@repo/validators": "workspace:*",
     "@trpc/server": "^11.19.0",
     "jose": "^6.2.12",
     "superjson": "^2.2.6"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*"
   }
 }

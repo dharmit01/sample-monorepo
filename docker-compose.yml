@@ -1,11 +1,41 @@
+name: student-management
+# Dev DB only (for `pnpm dev`):   docker compose up -d
+# Full app on http://localhost:3000: docker compose --profile app up -d --build
+x-database-url: &database-url postgres://postgres:${POSTGRES_PASSWORD:-postgres}@db:5432/app
+
 services:
   db:
     image: postgres:18
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       POSTGRES_DB: app
     ports: ["5432:5432"]
     volumes: [pgdata:/var/lib/postgresql]
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "app"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  migrate:
+    profiles: [app]
+    build: { context: ., target: migrate }
+    environment:
+      DATABASE_URL: *database-url
+    depends_on:
+      db: { condition: service_healthy }
+
+  web:
+    profiles: [app]
+    build: { context: ., target: runner }
+    restart: unless-stopped
+    ports: ["3000:3000"]
+    environment:
+      DATABASE_URL: *database-url
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET (32+ chars) in .env}
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+
 volumes:
   pgdata:

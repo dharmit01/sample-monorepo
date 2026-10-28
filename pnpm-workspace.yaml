@@ -6,3 +6,6 @@ allowBuilds:
   esbuild: true
   sharp: false
   unrs-resolver: false
+
+# Fail install when Node doesn't match package.json "engines" (see .nvmrc)
+engineStrict: true

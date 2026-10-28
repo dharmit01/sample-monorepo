@@ -1,0 +1,13 @@
+# Host deps/builds must never enter the image (wrong platform binaries, stale output)
+**/node_modules
+**/.next
+**/.turbo
+**/*.tsbuildinfo
+**/next-env.d.ts
+# Secrets are passed at runtime, never baked in
+**/.env*
+.git
+**/.DS_Store
+Dockerfile
+.dockerignore
+docker-compose.yml

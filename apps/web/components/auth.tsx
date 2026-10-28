@@ -3,6 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useId, useState } from "react";
+import { ROUTES } from "@repo/constants";
 import { loginInput, signupInput, type SignupInput } from "@repo/validators";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,7 +18,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
   const router = useRouter();
   const [errors, setErrors] = useState<FieldErrors>({});
   const onSuccess = () => {
-    router.replace("/");
+    router.replace(ROUTES.dashboard);
     router.refresh();
   };
   const login = useMutation(trpc.auth.login.mutationOptions({ onSuccess }));
@@ -71,7 +72,10 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
       </CardContent>
       <CardFooter className="justify-center gap-1 text-sm text-muted-foreground">
         {isLogin ? "No account?" : "Already registered?"}
-        <Link href={isLogin ? "/signup" : "/login"} className="text-foreground underline underline-offset-4">
+        <Link
+          href={isLogin ? ROUTES.signup : ROUTES.login}
+          className="text-foreground underline underline-offset-4"
+        >
           {isLogin ? "Sign up" : "Log in"}
         </Link>
       </CardFooter>
@@ -79,7 +83,12 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
   );
 }
 
-function Field({ label, error, name, ...props }: React.ComponentProps<typeof Input> & { label: string; name: string; error?: string }) {
+function Field({
+  label,
+  error,
+  name,
+  ...props
+}: React.ComponentProps<typeof Input> & { label: string; name: string; error?: string }) {
   // Unique ids: Next keeps the previous route mounted (hidden), so plain "email" would collide
   const id = useId();
   return (
@@ -101,20 +110,15 @@ function Field({ label, error, name, ...props }: React.ComponentProps<typeof Inp
   );
 }
 
-export function LogoutButton() {
+export function useLogout() {
   const trpc = useTRPC();
   const router = useRouter();
-  const logout = useMutation(
+  return useMutation(
     trpc.auth.logout.mutationOptions({
       onSuccess: () => {
-        router.replace("/login");
+        router.replace(ROUTES.login);
         router.refresh();
       },
     }),
-  );
-  return (
-    <Button variant="outline" onClick={() => logout.mutate()} disabled={logout.isPending}>
-      Log out
-    </Button>
   );
 }
